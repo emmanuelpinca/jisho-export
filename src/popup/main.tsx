@@ -14,7 +14,9 @@ function Popup() {
     exportData("jisho-output.csv", formattedData);
   };
 
-  const handleClear = async () => {};
+  const handleClear = async () => {
+    await browser.storage.local.clear();
+  };
 
   return (
     <div
