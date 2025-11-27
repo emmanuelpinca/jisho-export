@@ -17,12 +17,12 @@ const handleClick = (
 
 const renderButtonState = (button: HTMLButtonElement, saved: boolean) => {
   if (saved) {
-    button.textContent = "Saved with Jisho Export ✓";
+    button.textContent = "Saved with Jisho Export 〇";
     button.onmouseenter = () => {
-      button.textContent = "Unsave from Jisho Export X";
+      button.textContent = "Unsave from Jisho Export ×";
     };
     button.onmouseleave = () => {
-      button.textContent = "Saved with Jisho Export ✓";
+      button.textContent = "Saved with Jisho Export 〇";
     };
   } else {
     button.textContent = "Save with Jisho Export ▸";
