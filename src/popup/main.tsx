@@ -3,13 +3,18 @@ import "../global.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Button } from "./components";
+import { exportData, formatData } from "./utilities";
 
 function Popup() {
   const handleView = () => {};
 
-  const handleExport = () => {};
+  const handleExport = async () => {
+    const data = await browser.storage.local.get();
+    const formattedData = formatData(Object.values(data));
+    exportData("jisho-output.csv", formattedData);
+  };
 
-  const handleClear = () => {};
+  const handleClear = async () => {};
 
   return (
     <div
