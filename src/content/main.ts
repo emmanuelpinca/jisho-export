@@ -19,7 +19,7 @@ const renderButtonState = (button: HTMLButtonElement, saved: boolean) => {
   if (saved) {
     button.textContent = "Saved with Jisho Export 〇";
     button.onmouseenter = () => {
-      button.textContent = "Unsave from Jisho Export ×";
+      button.textContent = "Remove from Jisho Export ×";
     };
     button.onmouseleave = () => {
       button.textContent = "Saved with Jisho Export 〇";
