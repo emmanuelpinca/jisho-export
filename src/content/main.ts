@@ -15,6 +15,26 @@ const handleClick = (
   });
 };
 
+const renderButtonState = (button: HTMLButtonElement, saved: boolean) => {
+  if (saved) {
+    button.textContent = "Saved with Jisho Export ✓";
+    button.onmouseenter = () => {
+      button.textContent = "Unsave from Jisho Export X";
+    };
+    button.onmouseleave = () => {
+      button.textContent = "Saved with Jisho Export ✓";
+    };
+  } else {
+    button.textContent = "Save with Jisho Export ▸";
+    button.onmouseenter = () => {
+      button.textContent = "Save with Jisho Export ▸";
+    };
+    button.onmouseleave = () => {
+      button.textContent = "Save with Jisho Export ▸";
+    };
+  }
+};
+
 const fetchData = async (payload: TitleType): Promise<StoredDataType> => {
   const res = await browser.runtime.sendMessage({
     type: "get",
@@ -56,11 +76,7 @@ const init = async () => {
         button.className =
           "!text-link !text-xs !px-0 !pb-0 !pt-1 !bg-transparent opacity-30 hover:opacity-100 !underline";
 
-        if (saved) {
-          button.textContent = "Unsave from Jisho Export ▸";
-        } else {
-          button.textContent = "Save with Jisho Export ▸";
-        }
+        renderButtonState(button, saved);
 
         const payload: SavePayloadType = {
           text: title?.text || "",
@@ -79,11 +95,7 @@ const init = async () => {
 
           if (res) {
             saved = !saved;
-            if (saved) {
-              button.textContent = "Unsave from Jisho Export ▸";
-            } else {
-              button.textContent = "Save with Jisho Export ▸";
-            }
+            renderButtonState(button, saved);
           }
         };
 
