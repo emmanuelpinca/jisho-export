@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* Default (light) value – this creates `text-link` */
+@theme {
+  --color-link: rgb(74, 128, 181);
+}
+
+/* Override the variable based on data-color-theme */
+@layer theme {
+  [data-color-theme="dark"] {
+    --color-link: rgb(156, 190, 223);
+  }
+}
