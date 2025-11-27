@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Jisho Export",
+  "version": "0.0.1",
+  "description": "Saves and exports Jisho definitions",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "scripts": ["assets/background.js"]
+  },
+  "permissions": ["storage", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["assets/contentScript.js"]
+    }
+  ]
+}
