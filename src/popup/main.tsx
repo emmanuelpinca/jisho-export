@@ -6,7 +6,9 @@ import { Button } from "./components";
 import { exportData, formatData } from "./utilities";
 
 function Popup() {
-  const handleView = () => {};
+  const handleView = () => {
+    browser.runtime.openOptionsPage();
+  };
 
   const handleExport = async () => {
     const data = await browser.storage.local.get();
@@ -35,11 +37,11 @@ function Popup() {
         "bg-background border border-secondary",
       ].join(" ")}
     >
-      <span className="font-bold text-primary">Jisho Export</span>
+      <span className="font-bold text-secondary">Jisho Export</span>
       <div
         className={[
           "w-full h-fit",
-          "flex flex-col items-center justify-center space-y-1",
+          "flex flex-col items-center justify-center space-y-1 text-primary",
         ].join(" ")}
       >
         <Button onClick={handleView}>
