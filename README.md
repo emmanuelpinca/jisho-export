@@ -1,73 +1,128 @@
-# React + TypeScript + Vite
+# Jisho Export
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+A browser extension for Firefox and Chrome used to save definitions on [Jisho](https://jisho.org/) and export them for later review.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Made with React + TypeScript + Vite
 
-## React Compiler
+## How to use Jisho Export
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Creating a Build
 
-## Expanding the ESLint configuration
+### Build Requirements
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Operating Systems
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Windows 10 or later
+- macOS 12 or later
+- Any recent Linux distribution (Ubuntu 20.04+, Debian 11+, etc.)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Build Environment
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js: v24.11.1 LTS (tested)
+- npm: v11.6.4 (comes with Node 20)
+- Disk space: ~200 MB free
+- Memory: 4 GB RAM minimum (8 GB recommended)
+
+External Tools / Build Stack
+
+- Vite – dev server and build tool
+- Rollup (via Vite) – production bundler
+- esbuild (via Vite) – TS/JS transform & minification
+- TypeScript – type checking / source language
+- Tailwind CSS – CSS processing
+- React – UI framework for popup/options
+
+All of these are installed as npm dependencies and do not need to be installed globally.
+
+### Installation & Build Instructions
+
+1. Clone the repository
+
+```
+git clone https://github.com/emmanuelpinca/jisho-export.git
+cd jisho-export
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+npm install
+```
+
+This installs all Node-based build tools (Vite, TypeScript, Tailwind, etc.) listed in `package.json`.
+
+3. Build the extension
+
+```
+npm run build
+```
+
+This runs the configured Vite build, which:
+
+- Bundles the background script, content scripts, popup page, and options page
+- Compiles TypeScript to JavaScript
+- Processes Tailwind CSS
+- Outputs a production build into the `dist/` directory
+
+4. Resulting build artifacts
+
+After `npm run build`, you should see:
+
+```
+dist/
+  assets/...
+  index.html
+  manifest.json
+  options.html
+  ...
+```
+
+5. (Optional) Create the XPI/ZIP
+
+From inside the `dist/` directory:
+
+```
+cd dist
+# Zip all contents of dist/, not the dist folder itself
+zip -r ../jisho-export.zip .
+```
+
+### Build Script Description
+
+In `package.json`, the relevant script is:
+
+```
+{
+  "scripts": {
+    "build": "vite build"
+  }
+}
+```
+
+- `npm run build` calls vite build
+- `vite build` uses the project’s `vite.config.ts` file to:
+  - Configure entry points for popup, options, background, and content scripts
+  - Configure Rollup output
+  - Apply Tailwind processing
+
+### Program Versions & Installation Instructions
+
+**Node.js**
+
+Required version: 24.11.1 LTS
+
+Install from: [https://nodejs.org](https://nodejs.org)
+
+**npm**
+
+-Installed automatically with Node.js 24
+-Confirm version:
+
+```
+node -v   # should be v24.11.1
+npm -v    # should be v11.6.4
+```
+
+No global installation of Vite, TypeScript, Tailwind, etc. is required—the project uses local devDependencies.
