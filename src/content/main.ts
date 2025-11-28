@@ -5,11 +5,8 @@ const style = document.createElement("style");
 style.textContent = styles;
 document.head.appendChild(style);
 
-const handleClick = (
-  type: string,
-  payload: SavePayloadType
-): Promise<boolean> => {
-  return browser.runtime.sendMessage({
+const handleClick = async (type: string, payload: SavePayloadType) => {
+  await browser.runtime.sendMessage({
     type,
     payload,
   });
@@ -72,9 +69,7 @@ const init = async () => {
 
         const definition = findDefinition(meaning);
 
-        if (definition == undefined) {
-          continue;
-        }
+        if (definition == undefined) continue;
 
         let saved = false;
 
@@ -95,18 +90,14 @@ const init = async () => {
         };
 
         button.onclick = async () => {
-          let res;
-
           if (saved) {
-            res = await handleClick("unsave", payload);
+            await handleClick("unsave", payload);
           } else {
-            res = await handleClick("save", payload);
+            await handleClick("save", payload);
           }
 
-          if (res) {
-            saved = !saved;
-            renderButtonState(button, saved);
-          }
+          saved = !saved;
+          renderButtonState(button, saved);
         };
 
         container.appendChild(button);
