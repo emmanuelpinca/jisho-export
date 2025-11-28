@@ -1,7 +1,5 @@
 # Jisho Export
 
----
-
 A browser extension for Firefox and Chrome used to save definitions on [Jisho](https://jisho.org/) and export them for later review.
 
 Made with React + TypeScript + Vite
