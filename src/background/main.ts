@@ -55,14 +55,29 @@ const unsaveData = async (msg: { payload: SavePayloadType }) => {
   }
 };
 
-browser.runtime.onMessage.addListener(async (msg) => {
+const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
+  try {
+    const tabs = await browser.tabs.query({});
+    for (const tab of tabs) {
+      if (!tab?.id || tab.id === senderId) continue;
+
+      browser.tabs.sendMessage(tab.id, { type: "rerender" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+browser.runtime.onMessage.addListener(async (msg, sender) => {
   switch (msg.type) {
     case "get":
       return getData(msg);
     case "save":
+      broadcastRerenderToOtherTabs(sender.tab?.id);
       saveData(msg);
       return true;
     case "unsave":
+      broadcastRerenderToOtherTabs(sender.tab?.id);
       unsaveData(msg);
       return true;
     default:

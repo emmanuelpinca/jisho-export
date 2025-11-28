@@ -15,18 +15,17 @@ function Popup() {
   };
 
   const handleClear = async () => {
-    const [tab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
+    const tabs = await browser.tabs.query({});
 
     await browser.storage.local.clear();
 
-    if (!tab?.id) return;
+    for (const tab of tabs) {
+      if (!tab?.id) continue;
 
-    browser.tabs.sendMessage(tab.id, {
-      type: "rerender",
-    });
+      browser.tabs.sendMessage(tab.id, {
+        type: "rerender",
+      });
+    }
   };
 
   return (
