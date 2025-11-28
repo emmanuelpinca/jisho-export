@@ -71,6 +71,7 @@ const unsaveData = async (msg: { payload: SavePayloadType }) => {
 
 const unsaveDataRow = async (msg: { payload: TitleType }) => {
   const payload: TitleType = msg.payload;
+  data.delete(`${payload.text}${payload.furigana}`);
   await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
 };
 
