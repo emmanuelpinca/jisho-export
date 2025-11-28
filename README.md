@@ -40,60 +40,60 @@ All of these are installed as npm dependencies and do not need to be installed g
 
 1. Clone the repository
 
-```
-git clone https://github.com/emmanuelpinca/jisho-export.git
-cd jisho-export
-```
+   ```bash
+   git clone https://github.com/emmanuelpinca/jisho-export.git
+   cd jisho-export
+   ```
 
 2. Install dependencies
 
-```
-npm install
-```
+   ```bash
+   npm install
+   ```
 
-This installs all Node-based build tools (Vite, TypeScript, Tailwind, etc.) listed in `package.json`.
+   This installs all Node-based build tools (Vite, TypeScript, Tailwind, etc.) listed in `package.json`.
 
 3. Build the extension
 
-```
-npm run build
-```
+   ```bash
+   npm run build
+   ```
 
-This runs the configured Vite build, which:
+   This runs the configured Vite build, which:
 
-- Bundles the background script, content scripts, popup page, and options page
-- Compiles TypeScript to JavaScript
-- Processes Tailwind CSS
-- Outputs a production build into the `dist/` directory
+   - Bundles the background script, content scripts, popup page, and options page
+   - Compiles TypeScript to JavaScript
+   - Processes Tailwind CSS
+   - Outputs a production build into the `dist/` directory
 
 4. Resulting build artifacts
 
-After `npm run build`, you should see:
+   After `npm run build`, you should see:
 
-```
-dist/
-  assets/...
-  index.html
-  manifest.json
-  options.html
-  ...
-```
+   ```bash
+   dist/
+     assets/...
+     index.html
+     manifest.json
+     options.html
+     ...
+   ```
 
 5. (Optional) Create the XPI/ZIP
 
-From inside the `dist/` directory:
+   From inside the `dist/` directory:
 
-```
-cd dist
-# Zip all contents of dist/, not the dist folder itself
-zip -r ../jisho-export.zip .
-```
+   ```bash
+   cd dist
+   # Zip all contents of dist/, not the dist folder itself
+   zip -r ../jisho-export.zip .
+   ```
 
 ### Build Script Description
 
 In `package.json`, the relevant script is:
 
-```
+```bash
 {
   "scripts": {
     "build": "vite build"
@@ -109,18 +109,18 @@ In `package.json`, the relevant script is:
 
 ### Program Versions & Installation Instructions
 
-**Node.js**
+#### Node.js
 
 Required version: 24.11.1 LTS
 
 Install from: [https://nodejs.org](https://nodejs.org)
 
-**npm**
+#### npm
 
 -Installed automatically with Node.js 24
 -Confirm version:
 
-```
+```bash
 node -v   # should be v24.11.1
 npm -v    # should be v11.6.4
 ```
