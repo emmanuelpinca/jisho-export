@@ -91,20 +91,20 @@ const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
 browser.runtime.onMessage.addListener(async (msg, sender) => {
   switch (msg.type) {
     case "getall":
-      return getAllData();
+      return await getAllData();
     case "get":
-      return getData(msg);
+      return await getData(msg);
     case "save":
-      saveData(msg);
-      broadcastRerenderToOtherTabs(sender.tab?.id);
+      await saveData(msg);
+      await broadcastRerenderToOtherTabs(sender.tab?.id);
       return true;
     case "unsave":
-      unsaveData(msg);
-      broadcastRerenderToOtherTabs(sender.tab?.id);
+      await unsaveData(msg);
+      await broadcastRerenderToOtherTabs(sender.tab?.id);
       return true;
     case "unsaverow":
-      unsaveDataRow(msg);
-      broadcastRerenderToOtherTabs(sender.tab?.id);
+      await unsaveDataRow(msg);
+      await broadcastRerenderToOtherTabs(sender.tab?.id);
       return true;
     default:
       return true;
