@@ -17,17 +17,7 @@ function Popup() {
   };
 
   const handleClear = async () => {
-    const tabs = await browser.tabs.query({});
-
-    await browser.storage.local.clear();
-
-    for (const tab of tabs) {
-      if (!tab?.id) continue;
-
-      browser.tabs.sendMessage(tab.id, {
-        type: "rerender",
-      });
-    }
+    browser.runtime.sendMessage({ type: "unsaveall" });
   };
 
   return (
