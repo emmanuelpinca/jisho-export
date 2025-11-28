@@ -43,6 +43,16 @@ const fetchData = async (payload: TitleType): Promise<StoredDataType> => {
   return res;
 };
 
+const clearInjectedUI = () => {
+  const injectedCollection = document.body.getElementsByClassName(
+    "jisho-export w-full h-fit flex justify-end"
+  );
+
+  while (injectedCollection.length > 0) {
+    injectedCollection[0].parentNode?.removeChild(injectedCollection[0]);
+  }
+};
+
 const init = async () => {
   try {
     const conceptCollection = document.body.getElementsByClassName(
@@ -72,7 +82,7 @@ const init = async () => {
           saved = data.meanings.includes(definition || "");
         }
 
-        container.className = "w-full h-fit flex justify-end";
+        container.className = "jisho-export w-full h-fit flex justify-end";
         button.className =
           "!text-link !text-xs !px-0 !pb-0 !pt-1 !bg-transparent opacity-30 hover:opacity-100 !underline";
 
@@ -108,4 +118,12 @@ const init = async () => {
   }
 };
 
+browser.runtime.onMessage.addListener((msg) => {
+  if (msg.type === "rerender") {
+    clearInjectedUI();
+    init();
+  }
+});
+
+clearInjectedUI();
 init();
