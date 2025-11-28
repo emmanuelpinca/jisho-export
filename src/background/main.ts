@@ -75,6 +75,11 @@ const unsaveDataRow = async (msg: { payload: TitleType }) => {
   await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
 };
 
+const unsaveAll = async () => {
+  data.clear();
+  await browser.storage.local.clear();
+};
+
 const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
   try {
     const tabs = await browser.tabs.query({});
@@ -104,6 +109,10 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
       return true;
     case "unsaverow":
       await unsaveDataRow(msg);
+      await broadcastRerenderToOtherTabs(sender.tab?.id);
+      return true;
+    case "unsaveall":
+      await unsaveAll();
       await broadcastRerenderToOtherTabs(sender.tab?.id);
       return true;
     default:
