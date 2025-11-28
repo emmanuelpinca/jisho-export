@@ -1,5 +1,19 @@
 const data = new Map<string, StoredDataType>();
 
+const getAllData = async () => {
+  const items = [];
+
+  const storedData: Record<string, StoredDataType> =
+    await browser.storage.local.get();
+
+  for (const [key, value] of Object.entries(storedData)) {
+    data.set(key, value);
+    items.push(value);
+  }
+
+  return items;
+};
+
 const getData = async (msg: { payload: TitleType }) => {
   const payload: TitleType = msg.payload;
 
@@ -55,6 +69,11 @@ const unsaveData = async (msg: { payload: SavePayloadType }) => {
   }
 };
 
+const unsaveDataRow = async (msg: { payload: TitleType }) => {
+  const payload: TitleType = msg.payload;
+  await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
+};
+
 const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
   try {
     const tabs = await browser.tabs.query({});
@@ -70,15 +89,21 @@ const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
 
 browser.runtime.onMessage.addListener(async (msg, sender) => {
   switch (msg.type) {
+    case "getall":
+      return getAllData();
     case "get":
       return getData(msg);
     case "save":
-      broadcastRerenderToOtherTabs(sender.tab?.id);
       saveData(msg);
+      broadcastRerenderToOtherTabs(sender.tab?.id);
       return true;
     case "unsave":
-      broadcastRerenderToOtherTabs(sender.tab?.id);
       unsaveData(msg);
+      broadcastRerenderToOtherTabs(sender.tab?.id);
+      return true;
+    case "unsaverow":
+      unsaveDataRow(msg);
+      broadcastRerenderToOtherTabs(sender.tab?.id);
       return true;
     default:
       return true;
