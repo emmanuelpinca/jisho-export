@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jisho Export",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Saves and exports Jisho definitions",
   "action": {
     "default_popup": "index.html"
@@ -19,5 +19,14 @@
       "matches": ["https://jisho.org/*"],
       "js": ["assets/contentScript.js"]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@jisho-export.emmanuel-pinca",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
 }
