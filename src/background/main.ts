@@ -82,40 +82,58 @@ const unsaveAll = async () => {
 
 const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
   try {
-    const tabs = await browser.tabs.query({});
+    const tabs = await browser.tabs.query({ url: "*://jisho.org/*" });
     for (const tab of tabs) {
       if (!tab?.id || tab.id === senderId) continue;
 
-      browser.tabs.sendMessage(tab.id, { type: "rerender" });
+      await browser.tabs.sendMessage(tab.id, { type: "rerender" });
     }
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    await browser.runtime.sendMessage({ type: "rerender" });
   } catch (error) {
     console.log(error);
   }
 };
 
-browser.runtime.onMessage.addListener(async (msg, sender) => {
-  switch (msg.type) {
-    case "getall":
-      return await getAllData();
-    case "get":
-      return await getData(msg);
-    case "save":
-      await saveData(msg);
-      await broadcastRerenderToOtherTabs(sender.tab?.id);
-      return true;
-    case "unsave":
-      await unsaveData(msg);
-      await broadcastRerenderToOtherTabs(sender.tab?.id);
-      return true;
-    case "unsaverow":
-      await unsaveDataRow(msg);
-      await broadcastRerenderToOtherTabs(sender.tab?.id);
-      return true;
-    case "unsaveall":
-      await unsaveAll();
-      await broadcastRerenderToOtherTabs(sender.tab?.id);
-      return true;
-    default:
-      return true;
-  }
+browser.runtime.onMessage.addListener((msg, sender) => {
+  return (async () => {
+    try {
+      switch (msg?.type) {
+        case "getall":
+          return await getAllData();
+
+        case "get":
+          return await getData(msg);
+
+        case "save":
+          await saveData(msg);
+          await broadcastRerenderToOtherTabs(sender.tab?.id);
+          return { ok: true };
+
+        case "unsave":
+          await unsaveData(msg);
+          await broadcastRerenderToOtherTabs(sender.tab?.id);
+          return { ok: true };
+
+        case "unsaverow":
+          await unsaveDataRow(msg);
+          await broadcastRerenderToOtherTabs(sender.tab?.id);
+          return { ok: true };
+
+        case "unsaveall":
+          await unsaveAll();
+          await broadcastRerenderToOtherTabs(sender.tab?.id);
+          return { ok: true };
+
+        default:
+          return { ok: false, error: `Unknown type: ${String(msg?.type)}` };
+      }
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    }
+  })();
 });

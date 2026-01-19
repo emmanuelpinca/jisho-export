@@ -109,10 +109,10 @@ const init = async () => {
   }
 };
 
-browser.runtime.onMessage.addListener((msg) => {
+browser.runtime.onMessage.addListener(async (msg) => {
   if (msg.type === "rerender") {
     clearInjectedUI();
-    init();
+    await init();
   }
 });
 
