@@ -4,11 +4,13 @@
   --color-link: rgb(74, 128, 181);
   --color-background: rgb(255, 255, 255);
   --color-editor: rgb(222, 222, 222);
-  --color-primary: rgb(238, 238, 238);
+  --color-primary: rgb(34, 34, 34);
   --color-secondary: rgb(170, 170, 170);
 
   --color-light: rgb(255, 255, 255);
   --color-dark: rgb(110, 110, 110);
+
+  --color-logo: rgb(102, 102, 102);
 }
 
 @layer theme {
@@ -16,6 +18,10 @@
     --color-link: rgb(156, 190, 223);
     --color-background: rgb(42, 42, 42);
     --color-editor: rgb(21, 21, 21);
+    --color-primary: rgb(238, 238, 238);
+    --color-secondary: rgb(110, 110, 110);
+
+    --color-logo: rgb(221, 221, 221);
   }
 }
 
@@ -25,6 +31,10 @@
       --color-link: rgb(156, 190, 223);
       --color-background: rgb(42, 42, 42);
       --color-editor: rgb(21, 21, 21);
+      --color-primary: rgb(238, 238, 238);
+      --color-secondary: rgb(110, 110, 110);
+
+      --color-logo: rgb(221, 221, 221);
     }
   }
 }
