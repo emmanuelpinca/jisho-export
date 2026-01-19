@@ -164,6 +164,15 @@ function Options() {
           </tbody>
         </table>
       </div>
+      <div className="flex flex-row space-x-1 text-secondary py-4">
+        <p>Jisho Export by</p>
+        <a
+          className="text-link hover:text-primary underline"
+          href="https://github.com/emmanuelpinca"
+        >
+          Emmanuel Pinca
+        </a>
+      </div>
     </div>
   );
 }
