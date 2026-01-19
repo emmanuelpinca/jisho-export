@@ -14,9 +14,7 @@ const getAllData = async () => {
   return items;
 };
 
-const getData = async (msg: { payload: TitleType }) => {
-  const payload: TitleType = msg.payload;
-
+const getData = async (payload: TitleType) => {
   const storedData: StoredDataType = (
     await browser.storage.local.get(`${payload.text}${payload.furigana}`)
   )[`${payload.text}${payload.furigana}`];
@@ -30,9 +28,7 @@ const getData = async (msg: { payload: TitleType }) => {
   return res;
 };
 
-const saveData = async (msg: { payload: SavePayloadType }) => {
-  const payload: SavePayloadType = msg.payload;
-
+const saveData = async (payload: SavePayloadType) => {
   const curr = data.get(`${payload.text}${payload.furigana}`) ?? {
     text: payload.text,
     furigana: payload.furigana,
@@ -48,9 +44,7 @@ const saveData = async (msg: { payload: SavePayloadType }) => {
   });
 };
 
-const unsaveData = async (msg: { payload: SavePayloadType }) => {
-  const payload: SavePayloadType = msg.payload;
-
+const unsaveData = async (payload: SavePayloadType) => {
   const curr = data.get(`${payload.text}${payload.furigana}`) ?? {
     text: payload.text,
     furigana: payload.furigana,
@@ -69,8 +63,7 @@ const unsaveData = async (msg: { payload: SavePayloadType }) => {
   }
 };
 
-const unsaveDataRow = async (msg: { payload: TitleType }) => {
-  const payload: TitleType = msg.payload;
+const unsaveDataRow = async (payload: TitleType) => {
   data.delete(`${payload.text}${payload.furigana}`);
   await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
 };
@@ -107,20 +100,20 @@ browser.runtime.onMessage.addListener((msg, sender) => {
           return await getAllData();
 
         case "get":
-          return await getData(msg);
+          return await getData(msg.payload);
 
         case "save":
-          await saveData(msg);
+          await saveData(msg.payload);
           await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
         case "unsave":
-          await unsaveData(msg);
+          await unsaveData(msg.payload);
           await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
         case "unsaverow":
-          await unsaveDataRow(msg);
+          await unsaveDataRow(msg.payload);
           await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
