@@ -97,8 +97,8 @@ function Options() {
       className="w-full min-h-screen py-24 px-48 bg-background flex flex-col"
     >
       <header className="flex flex-row items-center justify-between py-4 shrink-0">
-        <h1 className="w-fit h-fit text-3xl text-secondary font-bold">
-          Jisho Export
+        <h1 className="w-fit h-fit font-bold text-4xl text-logo tracking-tighter">
+          jishoExport
         </h1>
         <div className="w-fit h-fit flex flex-row items-center justify-center space-x-4">
           <Button onClick={handleExport}>
