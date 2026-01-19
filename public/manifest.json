@@ -13,7 +13,8 @@
   "background": {
     "scripts": ["assets/background.js"]
   },
-  "permissions": ["storage", "scripting"],
+  "permissions": ["storage", "scripting", "cookies"],
+  "host_permissions": ["https://jisho.org/*"],
   "content_scripts": [
     {
       "matches": ["https://jisho.org/*"],

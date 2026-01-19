@@ -7,6 +7,7 @@ import { exportData, formatData } from "./utilities";
 
 function Options() {
   const [data, setData] = useState<StoredDataType[]>([]);
+  const [theme, setTheme] = useState<"light" | "dark" | "auto">("auto");
 
   const handleExport = async () => {
     const data = await browser.storage.local.get();
@@ -62,18 +63,37 @@ function Options() {
     }
   };
 
+  const updateTheme = async () => {
+    const cookie = await browser.cookies.get({
+      url: "https://jisho.org/",
+      name: "ct",
+    });
+
+    if (
+      cookie != null &&
+      (cookie.value === "light" || cookie.value === "dark")
+    ) {
+      setTheme(cookie.value);
+    } else {
+      setTheme("auto");
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    updateTheme();
     browser.runtime.onMessage.addListener(handleMessage);
+    browser.cookies.onChanged.addListener(updateTheme);
 
     return () => {
       browser.runtime.onMessage.removeListener(handleMessage);
+      browser.cookies.onChanged.removeListener(updateTheme);
     };
   }, []);
 
   return (
     <div
-      data-color-theme="dark"
+      data-color-theme={theme}
       className="w-full min-h-screen py-24 px-48 bg-background flex flex-col"
     >
       <header className="flex flex-row items-center justify-between py-4 shrink-0">
