@@ -109,12 +109,12 @@ const init = async () => {
   }
 };
 
-browser.runtime.onMessage.addListener(async (msg) => {
-  if (msg.type === "rerender") {
-    clearInjectedUI();
-    await init();
-  }
-});
+const handleChange = () => {
+  clearInjectedUI();
+  init();
+};
+
+browser.storage.onChanged.addListener(handleChange);
 
 clearInjectedUI();
 init();

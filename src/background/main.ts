@@ -73,26 +73,7 @@ const unsaveAll = async () => {
   await browser.storage.local.clear();
 };
 
-const broadcastRerenderToOtherTabs = async (senderId: number | undefined) => {
-  try {
-    const tabs = await browser.tabs.query({ url: "*://jisho.org/*" });
-    for (const tab of tabs) {
-      if (!tab?.id || tab.id === senderId) continue;
-
-      await browser.tabs.sendMessage(tab.id, { type: "rerender" });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  try {
-    await browser.runtime.sendMessage({ type: "rerender" });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-browser.runtime.onMessage.addListener((msg, sender) => {
+browser.runtime.onMessage.addListener((msg) => {
   return (async () => {
     try {
       switch (msg?.type) {
@@ -104,22 +85,18 @@ browser.runtime.onMessage.addListener((msg, sender) => {
 
         case "save":
           await saveData(msg.payload);
-          await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
         case "unsave":
           await unsaveData(msg.payload);
-          await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
         case "unsaverow":
           await unsaveDataRow(msg.payload);
-          await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
         case "unsaveall":
           await unsaveAll();
-          await broadcastRerenderToOtherTabs(sender.tab?.id);
           return { ok: true };
 
         default:

@@ -57,12 +57,6 @@ function Options() {
     setData(newData);
   };
 
-  const handleMessage = async (msg: { type: string }) => {
-    if (msg.type === "rerender") {
-      await fetchData();
-    }
-  };
-
   const updateTheme = async () => {
     const cookie = await browser.cookies.get({
       url: "https://jisho.org/",
@@ -82,11 +76,11 @@ function Options() {
   useEffect(() => {
     fetchData();
     updateTheme();
-    browser.runtime.onMessage.addListener(handleMessage);
+    browser.storage.onChanged.addListener(fetchData);
     browser.cookies.onChanged.addListener(updateTheme);
 
     return () => {
-      browser.runtime.onMessage.removeListener(handleMessage);
+      browser.storage.onChanged.removeListener(fetchData);
       browser.cookies.onChanged.removeListener(updateTheme);
     };
   }, []);
