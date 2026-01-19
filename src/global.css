@@ -3,15 +3,20 @@
 /* Default (light) value – this creates `text-link` */
 @theme {
   --color-link: rgb(74, 128, 181);
-  --color-background: rgb(42, 42, 42);
-  --color-editor: rgb(21, 21, 21);
+  --color-background: rgb(255, 255, 255);
+  --color-editor: rgb(222, 222, 222);
   --color-primary: rgb(238, 238, 238);
   --color-secondary: rgb(170, 170, 170);
+
+  --color-light: rgb(255, 255, 255);
+  --color-dark: rgb(110, 110, 110);
 }
 
 /* Override the variable based on data-color-theme */
 @layer theme {
   [data-color-theme="dark"] {
     --color-link: rgb(156, 190, 223);
+    --color-background: rgb(42, 42, 42);
+    --color-editor: rgb(21, 21, 21);
   }
 }

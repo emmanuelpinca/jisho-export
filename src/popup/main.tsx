@@ -22,6 +22,7 @@ function Popup() {
 
   return (
     <div
+      data-color-theme="dark"
       className={[
         "w-fit h-fit p-4 flex flex-col items-center justify-center space-y-2",
         "bg-background border border-secondary",

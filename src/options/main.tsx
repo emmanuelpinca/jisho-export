@@ -72,7 +72,10 @@ function Options() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen py-24 px-48 bg-background flex flex-col">
+    <div
+      data-color-theme="dark"
+      className="w-full min-h-screen py-24 px-48 bg-background flex flex-col"
+    >
       <header className="flex flex-row items-center justify-between py-4 shrink-0">
         <h1 className="w-fit h-fit text-3xl text-secondary font-bold">
           Jisho Export
