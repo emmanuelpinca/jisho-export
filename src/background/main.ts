@@ -1,46 +1,35 @@
+import { fetchFormattedData } from "./utilities";
 
 const saveData = async (payload: SavePayloadType) => {
-  const curr = data.get(`${payload.text}${payload.furigana}`) ?? {
-    text: payload.text,
-    furigana: payload.furigana,
-    meanings: [],
-  };
+  const data = await fetchFormattedData(payload);
 
-  curr.meanings = curr.meanings.filter((meaning) => meaning != payload.meaning);
-  curr.meanings.push(payload.meaning);
+  data.meanings = data.meanings.filter((meaning) => meaning != payload.meaning);
+  data.meanings.push(payload.meaning);
 
-  data.set(`${payload.text}${payload.furigana}`, curr);
   await browser.storage.local.set({
-    [`${payload.text}${payload.furigana}`]: curr,
+    [`${payload.text}${payload.furigana}`]: data,
   });
 };
 
 const unsaveData = async (payload: SavePayloadType) => {
-  const curr = data.get(`${payload.text}${payload.furigana}`) ?? {
-    text: payload.text,
-    furigana: payload.furigana,
-    meanings: [],
-  };
+  const data = await fetchFormattedData(payload);
 
-  curr.meanings = curr.meanings.filter((meaning) => meaning != payload.meaning);
-  data.set(`${payload.text}${payload.furigana}`, curr);
+  data.meanings = data.meanings.filter((meaning) => meaning != payload.meaning);
 
-  if (curr.meanings.length == 0) {
+  if (data.meanings.length == 0) {
     await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
   } else {
     await browser.storage.local.set({
-      [`${payload.text}${payload.furigana}`]: curr,
+      [`${payload.text}${payload.furigana}`]: data,
     });
   }
 };
 
 const unsaveDataRow = async (payload: TitleType) => {
-  data.delete(`${payload.text}${payload.furigana}`);
   await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
 };
 
 const unsaveAll = async () => {
-  data.clear();
   await browser.storage.local.clear();
 };
 
