@@ -14,20 +14,6 @@ const getAllData = async () => {
   return items;
 };
 
-const getData = async (payload: TitleType) => {
-  const storedData: StoredDataType = (
-    await browser.storage.local.get(`${payload.text}${payload.furigana}`)
-  )[`${payload.text}${payload.furigana}`];
-
-  const res = {
-    text: payload.text,
-    furigana: payload.furigana,
-    meanings: storedData != undefined ? storedData.meanings : [],
-  };
-  data.set(`${payload.text}${payload.furigana}`, res);
-  return res;
-};
-
 const saveData = async (payload: SavePayloadType) => {
   const curr = data.get(`${payload.text}${payload.furigana}`) ?? {
     text: payload.text,
@@ -79,9 +65,6 @@ browser.runtime.onMessage.addListener((msg) => {
       switch (msg?.type) {
         case "getall":
           return await getAllData();
-
-        case "get":
-          return await getData(msg.payload);
 
         case "save":
           await saveData(msg.payload);

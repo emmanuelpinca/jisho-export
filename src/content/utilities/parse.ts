@@ -1,20 +1,22 @@
 export const findTitle = (concept: Element): TitleType | undefined => {
   const textCollection = concept.getElementsByClassName("text");
+
+  if (textCollection.length != 1) {
+    console.log("Invalid Text");
+    return;
+  }
+
   const wrapperCollection = concept.getElementsByClassName(
-    "concept_light-wrapper  columns zero-padding"
+    "concept_light-wrapper  columns zero-padding",
   );
-  const furiganaCollection =
-    wrapperCollection[0].getElementsByClassName("furigana");
 
   if (wrapperCollection.length != 1) {
     console.log("Invalid Wrapper");
     return;
   }
 
-  if (textCollection.length != 1) {
-    console.log("Invalid Text");
-    return;
-  }
+  const furiganaCollection =
+    wrapperCollection[0].getElementsByClassName("furigana");
 
   if (furiganaCollection.length != 1) {
     console.log("Invalid Furigana");
@@ -45,4 +47,12 @@ export const findTitle = (concept: Element): TitleType | undefined => {
   }
 
   return { text: textArr.join(""), furigana: furiganaArr.join("") };
+};
+
+export const findDefinition = (meaning: Element): string | undefined => {
+  const meaningCollection = meaning.getElementsByClassName("meaning-meaning");
+
+  if (meaningCollection.length != 1) return;
+
+  return meaningCollection[0].textContent;
 };

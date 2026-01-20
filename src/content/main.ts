@@ -1,15 +1,45 @@
 import styles from "../global.css?inline";
-import { findDefinition, findTitle } from "./utilities";
+import type { Renderer, RootState, Selector, Subscriber } from "./types";
+import { fetchData, findDefinition, findTitle, updateData } from "./utilities";
 
 const style = document.createElement("style");
 style.textContent = styles;
 document.head.appendChild(style);
 
-const handleClick = async (type: string, payload: SavePayloadType) => {
-  await browser.runtime.sendMessage({
-    type,
-    payload,
-  });
+const buttonCollection = new Map<SavePayloadType, HTMLButtonElement>();
+
+let state: RootState = 0;
+const subs = new Set<Subscriber<unknown>>();
+
+const subscribe = <S>(
+  select: Selector<S>,
+  render: Renderer<S>,
+): (() => void) => {
+  const sub: Subscriber<S> = { select, render };
+
+  subs.add(sub as Subscriber<unknown>);
+
+  const next = select(state);
+  sub.prev = next;
+  render(next, undefined);
+
+  return () => {
+    subs.delete(sub as Subscriber<unknown>);
+  };
+};
+
+const notify = (nextState: RootState) => {
+  state = nextState;
+
+  for (const sub of subs) {
+    const next = sub.select(state);
+
+    if (Object.is(next, sub.prev)) continue;
+
+    const prev = sub.prev;
+    sub.prev = next;
+    sub.render(next, prev);
+  }
 };
 
 const renderButtonState = (button: HTMLButtonElement, saved: boolean) => {
@@ -32,17 +62,9 @@ const renderButtonState = (button: HTMLButtonElement, saved: boolean) => {
   }
 };
 
-const fetchData = async (payload: TitleType): Promise<StoredDataType> => {
-  const res = await browser.runtime.sendMessage({
-    type: "get",
-    payload,
-  });
-  return res;
-};
-
 const clearInjectedUI = () => {
   const injectedCollection = document.body.getElementsByClassName(
-    "jisho-export w-full h-fit flex justify-end"
+    "jisho-export w-full h-fit flex justify-end",
   );
 
   while (injectedCollection.length > 0) {
@@ -50,71 +72,90 @@ const clearInjectedUI = () => {
   }
 };
 
-const init = async () => {
-  try {
-    const conceptCollection = document.body.getElementsByClassName(
-      "concept_light clearfix"
-    );
+const init = () => {
+  const concepts = document.querySelectorAll<HTMLElement>(
+    ".concept_light.clearfix",
+  );
 
-    for (const concept of conceptCollection) {
-      const title = findTitle(concept);
-      if (!title) continue;
-      const data = await fetchData(title);
+  for (const concept of concepts) {
+    const title = findTitle(concept);
+    if (!title) continue;
 
-      const meaningCollection =
-        concept.getElementsByClassName("meaning-wrapper");
-      for (const meaning of meaningCollection) {
-        const container = document.createElement("div");
-        const button = document.createElement("button");
+    const meanings = concept.querySelectorAll<HTMLElement>(".meaning-wrapper");
+    for (const meaning of meanings) {
+      const definition = findDefinition(meaning);
+      if (!definition) continue;
 
-        const definition = findDefinition(meaning);
+      const container = document.createElement("div");
+      const button = document.createElement("button");
 
-        if (definition == undefined) continue;
+      container.className = "jisho-export w-full h-fit flex justify-end";
+      button.className =
+        "!text-link !text-xs !px-0 !pb-0 !pt-1 !bg-transparent opacity-30 hover:opacity-100 !underline";
 
-        let saved = false;
+      renderButtonState(button, false);
 
-        if (data != undefined && data.meanings != undefined) {
-          saved = data.meanings.includes(definition || "");
-        }
+      container.appendChild(button);
+      meaning.appendChild(container);
 
-        container.className = "jisho-export w-full h-fit flex justify-end";
-        button.className =
-          "!text-link !text-xs !px-0 !pb-0 !pt-1 !bg-transparent opacity-30 hover:opacity-100 !underline";
+      const payload: SavePayloadType = {
+        text: title.text || "",
+        furigana: title.furigana || "",
+        meaning: definition || "",
+      };
 
-        renderButtonState(button, saved);
-
-        const payload: SavePayloadType = {
-          text: title?.text || "",
-          furigana: title?.furigana || "",
-          meaning: definition || "",
-        };
-
-        button.onclick = async () => {
-          if (saved) {
-            await handleClick("unsave", payload);
-          } else {
-            await handleClick("save", payload);
-          }
-
-          saved = !saved;
-          renderButtonState(button, saved);
-        };
-
-        container.appendChild(button);
-        meaning.appendChild(container);
-      }
+      buttonCollection.set(payload, button);
     }
-  } catch (error) {
-    console.log(error);
   }
 };
 
-const handleChange = () => {
-  clearInjectedUI();
-  init();
+const hydrate = async () => {
+  for (const [key, button] of buttonCollection) {
+    const title: TitleType = { text: key.text, furigana: key.furigana };
+
+    let saved = false;
+
+    button.onclick = async () => {
+      if (saved) {
+        await updateData("unsave", key);
+      } else {
+        await updateData("save", key);
+      }
+    };
+
+    let lastSaved = saved;
+    let running = false;
+
+    subscribe(
+      (tick) => tick,
+
+      async () => {
+        if (running) return;
+        running = true;
+        try {
+          const data = await fetchData(title);
+
+          const nextSaved =
+            data?.meanings?.includes(key.meaning || "") ?? false;
+
+          if (nextSaved === lastSaved) return;
+
+          lastSaved = nextSaved;
+          saved = nextSaved;
+
+          renderButtonState(button, saved);
+        } finally {
+          running = false;
+        }
+      },
+    );
+  }
 };
 
-browser.storage.onChanged.addListener(handleChange);
+browser.storage.onChanged.addListener(() => {
+  notify(state + 1);
+});
 
 clearInjectedUI();
 init();
+hydrate();

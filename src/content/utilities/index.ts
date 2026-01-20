@@ -1,2 +1,2 @@
-export { findTitle } from "./title";
-export { findDefinition } from "./definition";
+export { findTitle, findDefinition } from "./parse";
+export { fetchData, updateData } from "./data";
