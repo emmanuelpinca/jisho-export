@@ -3,7 +3,7 @@ import "../global.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { Button } from "./components";
-import { exportData, formatData } from "./utilities";
+import { exportData, fetchAllData, formatData } from "./utilities";
 
 function Options() {
   const [data, setData] = useState<StoredDataType[]>([]);
@@ -29,10 +29,10 @@ function Options() {
               text: item.text,
               furigana: item.furigana,
               meanings: (item.meanings = item.meanings.filter(
-                (meaning) => meaning != payload.meaning
+                (meaning) => meaning != payload.meaning,
               )),
             }
-          : item
+          : item,
       );
 
       items = items.filter((item) => item.meanings.length > 0);
@@ -47,13 +47,13 @@ function Options() {
     setData((items) =>
       items.filter(
         (item) =>
-          item.text !== payload.text && item.furigana !== payload.furigana
-      )
+          item.text !== payload.text && item.furigana !== payload.furigana,
+      ),
     );
   };
 
   const fetchData = async () => {
-    const newData = await browser.runtime.sendMessage({ type: "getall" });
+    const newData = await fetchAllData();
     setData(newData);
   };
 
@@ -174,5 +174,5 @@ function Options() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Options />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

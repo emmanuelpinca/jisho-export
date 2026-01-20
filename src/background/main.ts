@@ -1,18 +1,3 @@
-const data = new Map<string, StoredDataType>();
-
-const getAllData = async () => {
-  const items = [];
-
-  const storedData: Record<string, StoredDataType> =
-    await browser.storage.local.get();
-
-  for (const [key, value] of Object.entries(storedData)) {
-    data.set(key, value);
-    items.push(value);
-  }
-
-  return items;
-};
 
 const saveData = async (payload: SavePayloadType) => {
   const curr = data.get(`${payload.text}${payload.furigana}`) ?? {
@@ -63,9 +48,6 @@ browser.runtime.onMessage.addListener((msg) => {
   return (async () => {
     try {
       switch (msg?.type) {
-        case "getall":
-          return await getAllData();
-
         case "save":
           await saveData(msg.payload);
           return { ok: true };
