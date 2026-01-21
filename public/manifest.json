@@ -4,7 +4,11 @@
   "version": "0.0.3",
   "description": "Saves and exports Jisho definitions",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": "logo.png"
+  },
+  "icons": {
+    "500": "logo.png"
   },
   "options_ui": {
     "page": "options.html",
