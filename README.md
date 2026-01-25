@@ -53,12 +53,19 @@ All of these are installed as npm dependencies and do not need to be installed g
 
 3. Build the extension
 
+   #### Chrome
+
    ```bash
-   npm run build
+   npm run build:chrome
+   ```
+
+   #### Firefox
+
+   ```bash
+   npm run build:firefox
    ```
 
    This runs the configured Vite build, which:
-
    - Bundles the background script, content scripts, popup page, and options page
    - Compiles TypeScript to JavaScript
    - Processes Tailwind CSS
@@ -66,7 +73,7 @@ All of these are installed as npm dependencies and do not need to be installed g
 
 4. Resulting build artifacts
 
-   After `npm run build`, you should see:
+   After `npm run build:<chrome|firefox>`, you should see:
 
    ```bash
    dist/
@@ -89,21 +96,24 @@ All of these are installed as npm dependencies and do not need to be installed g
 
 ### Build Script Description
 
-In `package.json`, the relevant script is:
+In `package.json`, the relevant scripts are:
 
 ```bash
 {
   "scripts": {
-    "build": "vite build"
+    "build": "tsc -b && vite build",
+    "build:chrome": "vite build && node scripts/manifest.mjs chrome",
+    "build:firefox": "vite build && node scripts/manifest.mjs firefox",
   }
 }
 ```
 
-- `npm run build` calls vite build
+- `npm run build` calls vite build without a manifest
 - `vite build` uses the project’s `vite.config.ts` file to:
   - Configure entry points for popup, options, background, and content scripts
   - Configure Rollup output
   - Apply Tailwind processing
+- `npm run build:<chrome|firefox>` runs `npm run build` and uses the project's `scripts/manifest.mjs` to combine `manifest/base.json` and `manifest/<chrome|firefox>.json` into a single manifest
 
 ### Program Versions & Installation Instructions
 
@@ -120,7 +130,7 @@ Install from: [https://nodejs.org](https://nodejs.org)
 
 ```bash
 node -v   # should be v24.11.1
-npm -v    # should be v11.6.4
+npm -v    # should be v11.8.0
 ```
 
 No global installation of Vite, TypeScript, Tailwind, etc. is required—the project uses local devDependencies.
