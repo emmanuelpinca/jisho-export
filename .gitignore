@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 jisho-export-source.zip
-build/jisho-export.zip
+build
