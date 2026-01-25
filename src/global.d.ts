@@ -1,4 +1,5 @@
 /// <reference types="firefox-webext-browser" />
+/// <reference types="chrome" />
 
 declare global {
   type StoredDataType = {

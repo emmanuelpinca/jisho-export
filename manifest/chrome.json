@@ -1,0 +1,6 @@
+{
+  "background": {
+    "service_worker": "assets/background.js",
+    "type": "module"
+  }
+}

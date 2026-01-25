@@ -4,15 +4,17 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { Button } from "./components";
 
+const extRuntime = globalThis.browser ?? globalThis.chrome;
+
 function Popup() {
   const [theme, setTheme] = useState<"light" | "dark" | "auto">("auto");
 
   const handleView = () => {
-    browser.runtime.openOptionsPage();
+    extRuntime.runtime.openOptionsPage();
   };
 
   const updateTheme = async () => {
-    const cookie = await browser.cookies.get({
+    const cookie = await extRuntime.cookies.get({
       url: "https://jisho.org/",
       name: "ct",
     });
@@ -29,10 +31,10 @@ function Popup() {
 
   useEffect(() => {
     updateTheme();
-    browser.cookies.onChanged.addListener(updateTheme);
+    extRuntime.cookies.onChanged.addListener(updateTheme);
 
     return () => {
-      browser.cookies.onChanged.removeListener(updateTheme);
+      extRuntime.cookies.onChanged.removeListener(updateTheme);
     };
   }, []);
 
@@ -40,7 +42,7 @@ function Popup() {
     <div
       data-color-theme={theme}
       className={[
-        "w-fit h-fit p-4 flex flex-col items-center justify-center space-y-2",
+        "w-fit min-w-[200px] h-fit p-4 flex flex-col items-center justify-center space-y-2",
         "bg-background",
       ].join(" ")}
     >
@@ -62,5 +64,5 @@ function Popup() {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Popup />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

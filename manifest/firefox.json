@@ -1,0 +1,13 @@
+{
+  "background": {
+    "scripts": ["assets/background.js"],
+    "type": "module"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@jisho-export.emmanuel-pinca",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  }
+}

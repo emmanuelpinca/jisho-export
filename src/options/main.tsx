@@ -5,23 +5,25 @@ import ReactDOM from "react-dom/client";
 import { Button } from "./components";
 import { exportData, fetchAllData, formatData } from "./utilities";
 
+const extRuntime = globalThis.browser ?? globalThis.chrome;
+
 function Options() {
   const [data, setData] = useState<StoredDataType[]>([]);
   const [theme, setTheme] = useState<"light" | "dark" | "auto">("auto");
 
   const handleExport = async () => {
-    const data = await browser.storage.local.get();
+    const data = await extRuntime.storage.local.get();
     const formattedData = formatData(Object.values(data));
     exportData("jisho-output.csv", formattedData);
   };
 
   const handleClear = async () => {
-    await browser.runtime.sendMessage({ type: "unsaveall" });
+    await extRuntime.runtime.sendMessage({ type: "unsaveall" });
     setData([]);
   };
 
   const handleDeleteItem = async (payload: SavePayloadType) => {
-    await browser.runtime.sendMessage({ type: "unsave", payload });
+    await extRuntime.runtime.sendMessage({ type: "unsave", payload });
     setData((items) => {
       items = items.map((item) =>
         item.text === payload.text && item.furigana === payload.furigana
@@ -42,7 +44,7 @@ function Options() {
   };
 
   const handleDeleteRow = async (payload: TitleType) => {
-    await browser.runtime.sendMessage({ type: "unsaverow", payload });
+    await extRuntime.runtime.sendMessage({ type: "unsaverow", payload });
 
     setData((items) =>
       items.filter(
@@ -58,7 +60,7 @@ function Options() {
   };
 
   const updateTheme = async () => {
-    const cookie = await browser.cookies.get({
+    const cookie = await extRuntime.cookies.get({
       url: "https://jisho.org/",
       name: "ct",
     });
@@ -76,12 +78,12 @@ function Options() {
   useEffect(() => {
     fetchData();
     updateTheme();
-    browser.storage.onChanged.addListener(fetchData);
-    browser.cookies.onChanged.addListener(updateTheme);
+    extRuntime.storage.onChanged.addListener(fetchData);
+    extRuntime.cookies.onChanged.addListener(updateTheme);
 
     return () => {
-      browser.storage.onChanged.removeListener(fetchData);
-      browser.cookies.onChanged.removeListener(updateTheme);
+      extRuntime.storage.onChanged.removeListener(fetchData);
+      extRuntime.cookies.onChanged.removeListener(updateTheme);
     };
   }, []);
 

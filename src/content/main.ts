@@ -2,6 +2,8 @@ import styles from "../global.css?inline";
 import type { Renderer, RootState, Selector, Subscriber } from "./types";
 import { fetchData, findDefinition, findTitle, updateData } from "./utilities";
 
+const extRuntime = globalThis.browser ?? globalThis.chrome;
+
 const style = document.createElement("style");
 style.textContent = styles;
 document.head.appendChild(style);
@@ -152,7 +154,7 @@ const hydrate = async () => {
   }
 };
 
-browser.storage.onChanged.addListener(() => {
+extRuntime.storage.onChanged.addListener(() => {
   notify(state + 1);
 });
 

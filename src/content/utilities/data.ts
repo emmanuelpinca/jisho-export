@@ -1,8 +1,10 @@
+const extRuntime = globalThis.browser ?? globalThis.chrome;
+
 export const fetchData = async (
   payload: TitleType,
 ): Promise<StoredDataType> => {
   const storedData: StoredDataType = (
-    await browser.storage.local.get(`${payload.text}${payload.furigana}`)
+    await extRuntime.storage.local.get(`${payload.text}${payload.furigana}`)
   )[`${payload.text}${payload.furigana}`];
 
   const res = {
@@ -15,7 +17,7 @@ export const fetchData = async (
 };
 
 export const updateData = async (type: string, payload: SavePayloadType) => {
-  await browser.runtime.sendMessage({
+  await extRuntime.runtime.sendMessage({
     type,
     payload,
   });

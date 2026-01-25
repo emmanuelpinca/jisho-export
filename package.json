@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:chrome": "vite build && node scripts/manifest.mjs chrome",
+    "build:firefox": "vite build && node scripts/manifest.mjs firefox",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -16,7 +18,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@tailwindcss/vite": "^4.1.17",
-    "@types/chrome": "^0.1.31",
+    "@types/chrome": "^0.1.36",
     "@types/firefox-webext-browser": "^143.0.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",

@@ -1,6 +1,8 @@
+const extRuntime = globalThis.browser ?? globalThis.chrome;
+
 export const fetchFormattedData = async (payload: SavePayloadType) => {
   const storedData: StoredDataType = (
-    await browser.storage.local.get(`${payload.text}${payload.furigana}`)
+    await extRuntime.storage.local.get(`${payload.text}${payload.furigana}`)
   )[`${payload.text}${payload.furigana}`];
 
   return {

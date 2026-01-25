@@ -1,12 +1,14 @@
 import { fetchFormattedData } from "./utilities";
 
+const extRuntime = globalThis.browser ?? globalThis.chrome;
+
 const saveData = async (payload: SavePayloadType) => {
   const data = await fetchFormattedData(payload);
 
   data.meanings = data.meanings.filter((meaning) => meaning != payload.meaning);
   data.meanings.push(payload.meaning);
 
-  await browser.storage.local.set({
+  await extRuntime.storage.local.set({
     [`${payload.text}${payload.furigana}`]: data,
   });
 };
@@ -17,23 +19,23 @@ const unsaveData = async (payload: SavePayloadType) => {
   data.meanings = data.meanings.filter((meaning) => meaning != payload.meaning);
 
   if (data.meanings.length == 0) {
-    await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
+    await extRuntime.storage.local.remove(`${payload.text}${payload.furigana}`);
   } else {
-    await browser.storage.local.set({
+    await extRuntime.storage.local.set({
       [`${payload.text}${payload.furigana}`]: data,
     });
   }
 };
 
 const unsaveDataRow = async (payload: TitleType) => {
-  await browser.storage.local.remove(`${payload.text}${payload.furigana}`);
+  await extRuntime.storage.local.remove(`${payload.text}${payload.furigana}`);
 };
 
 const unsaveAll = async () => {
-  await browser.storage.local.clear();
+  await extRuntime.storage.local.clear();
 };
 
-browser.runtime.onMessage.addListener((msg) => {
+extRuntime.runtime.onMessage.addListener((msg) => {
   return (async () => {
     try {
       switch (msg?.type) {
