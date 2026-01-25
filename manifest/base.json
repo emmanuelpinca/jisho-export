@@ -5,10 +5,11 @@
   "description": "Saves and exports Jisho definitions",
   "action": {
     "default_popup": "index.html",
-    "default_icon": "logo.png"
+    "default_icon": "logo-128.png"
   },
   "icons": {
-    "500": "logo.png"
+    "500": "logo-500.png",
+    "128": "logo-128.png"
   },
   "options_ui": {
     "page": "options.html",
