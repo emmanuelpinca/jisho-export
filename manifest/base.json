@@ -15,7 +15,7 @@
     "page": "options.html",
     "open_in_tab": true
   },
-  "permissions": ["storage", "scripting", "cookies"],
+  "permissions": ["storage", "cookies"],
   "host_permissions": ["https://jisho.org/*"],
   "content_scripts": [
     {
